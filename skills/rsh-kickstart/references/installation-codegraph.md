@@ -63,14 +63,28 @@ codegraph init
 
 ## 使用方法（写进 CLAUDE.md）
 
-`.claude/CLAUDE.md` 里已经有 CodeGraph 自带的工具说明。根目录的 `CLAUDE.md` 再写一段场景说明：
+`.claude/CLAUDE.md` 里已经有 CodeGraph 自带的简短说明（英文，只讲 `codegraph_explore`）。根目录的 `CLAUDE.md` 再写一段完整的场景说明。
+
+MCP 只提供一个工具 `codegraph_explore`（已用 `tools/list` 核实），查调用方、影响范围等更细的问题走 CLI 命令（已用 `codegraph --help` 核实）：
 
 ```markdown
-### CodeGraph（代码知识图谱）
-- OpenSpec 阶段：**explore、propose**。理解现有实现，查清受影响的模块和调用方，写进提案的影响部分
-- OpenSpec 阶段：**apply**。修改函数或接口之前，先查调用方和被调用方，改动要覆盖所有调用方
-- 理解代码、定位实现、追调用链时，先用 `codegraph_explore`，不要一上来就 grep 或逐个读文件
-- 结果和预期明显不符（比如刚加的符号查不到）时，执行 `codegraph sync` 刷新索引后再查
+### CodeGraph（代码知识图谱）—— 理解本项目代码时首选
+- **前提**：项目根目录有 `.codegraph/`（已建索引）。没有时提醒用户执行 `codegraph init`，不要自行建索引
+- **什么时候用**：理解某块功能怎么实现、定位某个功能在哪、追调用链、排查 bug 的调用路径、改动前查影响范围。这些场景先用 CodeGraph，**不要一上来就 grep 或逐个读文件**
+- **怎么用**：
+  - 首选 MCP 工具 `codegraph_explore`：用自然语言提问，或直接写出符号名、文件名，一次返回相关符号的源码和它们之间的调用路径
+  - MCP 不可用时，用等价的命令 `codegraph explore "<问题或符号名>"`
+  - 更细的问题用 CLI：
+    - `codegraph callers <符号>`：谁调用了它
+    - `codegraph callees <符号>`：它调用了谁
+    - `codegraph impact <符号>`：改它会影响哪些代码
+    - `codegraph affected <文件...>`：这些文件改动后，哪些测试要跑
+    - `codegraph node <符号>`：读一个符号的源码和上下游
+- **OpenSpec 阶段**：
+  - explore、propose：理解现有实现，用 `impact` / `callers` 查清受影响的模块，写进提案的影响部分
+  - apply：修改函数或接口之前，先查调用方，改动要覆盖所有调用方；改完用 `affected` 找出要跑的测试
+- **索引过期**：结果和预期明显不符（比如刚加的符号查不到）时，先执行 `codegraph sync` 再查；`codegraph status` 可以查看索引状态
+- grep 仍然适合搜字面文本：日志文案、配置键、错误信息字符串
 ```
 
 ## 卸载

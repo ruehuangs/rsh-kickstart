@@ -70,22 +70,33 @@ mcp__searchcode__*
 
 ## 使用方法（写进 CLAUDE.md）
 
-只写装了的那几个：
+只写装了的那几个。三者的分工：**context7 查文档，searchcode 看真实代码，exa 查网页上的最新信息**。同一个问题按这个顺序考虑：文档能回答的先查 context7；文档不够、要看别人怎么写，用 searchcode；与库无关、或者要最新动态，用 exa。
+
+工具名已用 MCP 的 `tools/list` 核实过。
 
 ```markdown
-### exa（联网搜索）
-- OpenSpec 阶段：**explore、design**。调研方案、了解业界做法、确认第三方服务的现状
-- 需要训练数据之后的信息时用：最新版本号、发布说明、新闻、报错信息的社区讨论
-- 搜索词用英文效果更好；写进提案或设计的关键事实，要注明来源链接
+### context7（库和框架文档）—— 涉及第三方库时首选
+- **什么时候用**：写或改依赖某个库、框架的代码；确认 API 签名、参数、配置项；判断某个能力在当前版本是否存在；升级依赖前查版本差异
+- **怎么用**：先 `resolve-library-id` 把库名解析成 ID，再用 `query-docs` 带上具体主题（如 "routing"、"middleware"）查询，不要笼统地查整个库
+- **版本**：以项目的依赖文件（package.json、go.mod、pyproject.toml 等）为准，查对应版本的文档
+- **OpenSpec 阶段**：design 核对能力是否存在、API 是否可用；apply 照着文档实现
+- **不要**凭记忆写 API；不要用 WebSearch 去搜官方文档
 
-### context7（库和框架文档）
-- OpenSpec 阶段：**design、apply**。设计时核对所用版本有没有这个能力；实现时照着文档写，不要凭记忆写 API
-- 先 resolve 出库的 ID，再带上具体主题（如 "routing"、"hooks"）查文档，不要整库拉取
-- 版本以项目的依赖文件（package.json、go.mod 等）为准
+### searchcode（公开仓库代码搜索）—— 需要参考真实代码时首选
+- **什么时候用**：文档不够，想看某个库或 API 在真实项目里怎么用；研究某个开源依赖的内部实现、排查它的行为；比较几种开源实现
+- **怎么用**：
+  - 不熟悉的仓库，先 `code_analyze` 了解概况，或用 `code_file_tree` 看目录结构
+  - `code_search` 搜代码（支持正则、布尔查询）；`code_find_usages` 找某个库在仓库里被哪些文件使用
+  - 定位后用 `code_get_file` 读具体函数或文件；一次读多个文件用 `code_get_files`
+- **OpenSpec 阶段**：explore、design，寻找参考实现，比较方案
+- **不要** clone 整个仓库来看几个文件；不要用 WebFetch 抓 GitHub 网页
 
-### searchcode（公开仓库代码搜索）
-- OpenSpec 阶段：**explore、design**。想看某个库、某个 API 在真实项目里怎么用时，搜索公开仓库，找参考实现
-- 分析某个开源依赖的源码行为时，用它直接读远程仓库，不必 clone
+### exa（网页搜索）—— 需要最新信息时首选
+- **什么时候用**：训练数据之后的信息，如最新版本号、发布说明、安全公告、新闻；报错信息的社区讨论；第三方服务、产品的现状和价格；context7 里没有收录的资料
+- **怎么用**：先 `web_search_exa` 搜索，搜索词用英文效果更好；摘要不够时，用 `web_fetch_exa` 读取全文
+- **OpenSpec 阶段**：explore、design，调研方案和业界做法
+- 写进提案、设计的关键事实，要注明来源链接
+- **不要**用内置的 WebSearch / WebFetch，除非 exa 不可用或调用失败
 ```
 
 ## 卸载
