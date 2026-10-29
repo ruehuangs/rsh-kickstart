@@ -2,7 +2,7 @@
 
 > [OpenSpec](https://github.com/Fission-AI/OpenSpec)：spec 驱动开发。先写变更提案和规范，人确认后再让 Claude 实现，验证后归档。
 >
-> **kickstart.claude 以 OpenSpec 为开发主流程**：这个模块始终安装，其他工具都挂在 OpenSpec 的各个阶段上配合使用。
+> **rsh-kickstart 以 OpenSpec 为开发主流程**：这个模块始终安装，其他工具都挂在 OpenSpec 的各个阶段上配合使用。
 
 ## 前置条件
 

@@ -1,4 +1,4 @@
-# kickstart.claude
+# rsh-kickstart
 
 一个注释详尽、按需取用的 [Claude Code](https://code.claude.com/docs) **项目级**配置起点：新建或接手项目时，一条指令把你日常用的 MCP 和 skills 引入项目，并随仓库共享给团队。
 
@@ -24,7 +24,7 @@
 
 **以 OpenSpec 为开发主流程**：每个项目都会装上 [OpenSpec](https://github.com/Fission-AI/OpenSpec)，按"探索 → 提案 → 确认 → 实现 → 验证 → 归档"推进开发。其他工具都挂在这条流程的各个阶段上：提案时用 CodeGraph 查影响范围，设计时用 context7 核对 API，验证时用 agent-browser 在浏览器里检查。
 
-**kickstart.claude 只做项目级安装**：
+**rsh-kickstart 只做项目级安装**：
 
 - 所有东西写进项目目录（`.mcp.json`、`.claude/`、`openspec/`、`CLAUDE.md`），提交到 git 后，团队共享同一套环境
 - 不只是装上：顺带写好**默认配置**，并把**使用方法**写进 `CLAUDE.md`，Claude 装完就知道怎么用
@@ -37,15 +37,15 @@
 
 ## 快速开始
 
-**方式一：斜杠命令**
+**方式一：斜杠命令**（推荐）
 
-先做一次性准备：把入口 skill 链接到全局，让任何项目里都能用 `/rsh-kickstart`（Windows PowerShell）：
+先把 skill 装到全局，让任何项目里都能用 `/rsh-kickstart`：
 
-```powershell
-New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\skills\rsh-kickstart" -Target "F:\code\skills\skills\rsh-kickstart"
+```bash
+npx skills add ruehuangs/rsh-kickstart -g -a claude-code -y
 ```
 
-之后在任意项目里：
+以后更新也是同一条命令。之后在任意项目里：
 
 ```
 /rsh-kickstart                    # 完整流程：盘点现状 → 选择模块 → 安装和默认配置 → 把使用方法写进 CLAUDE.md
@@ -59,27 +59,25 @@ New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\skills\rsh-kickstart
 在项目目录下启动 Claude Code，粘贴：
 
 ```
-阅读安装指南并照做：F:/code/skills/docs/installation.md
+阅读安装指南并照做：https://raw.githubusercontent.com/ruehuangs/rsh-kickstart/main/skills/rsh-kickstart/references/installation.md
 ```
-
-> 把本仓库推到 GitHub 后，也可以换成 raw 链接，在任何电脑上都能用。
 
 ---
 
 ## 项目结构
 
 ```
-kickstart.claude/
+rsh-kickstart/
 ├── README.md
-├── docs/
-│   ├── installation.md                ← 主流程：盘点 → 选模块 → 安装 → CLAUDE.md → 汇报
-│   ├── installation-mcp.md            ← exa / context7 / searchcode
-│   ├── installation-caveman.md        ← 压缩回复，省 token
-│   ├── installation-openspec.md       ← 核心：OpenSpec 开发主流程
-│   ├── installation-codegraph.md      ← 代码知识图谱
-│   └── installation-agent-browser.md  ← 浏览器自动化
-└── skills/
-    └── rsh-kickstart/SKILL.md         ← /rsh-kickstart 入口，本身不会被装进项目
+└── skills/rsh-kickstart/                  ← npx skills add 安装的就是这个目录
+    ├── SKILL.md                           ← /rsh-kickstart 入口，本身不会被装进项目
+    └── references/
+        ├── installation.md                ← 主流程：盘点 → 选模块 → 安装 → CLAUDE.md → 汇报
+        ├── installation-mcp.md            ← exa / context7 / searchcode
+        ├── installation-caveman.md        ← 压缩回复，省 token
+        ├── installation-openspec.md       ← 核心：OpenSpec 开发主流程
+        ├── installation-codegraph.md      ← 代码知识图谱
+        └── installation-agent-browser.md  ← 浏览器自动化
 ```
 
 ---
@@ -88,13 +86,13 @@ kickstart.claude/
 
 | 模块 | 作用 | 写进项目的文件 | 本机需要的 CLI |
 |---|---|---|---|
-| [exa](docs/installation-mcp.md) | 联网搜索 | `.mcp.json` | — |
-| [context7](docs/installation-mcp.md) | 库和框架的最新文档 | `.mcp.json` | — |
-| [searchcode](docs/installation-mcp.md) | 公开仓库代码搜索 | `.mcp.json` | — |
-| [caveman](docs/installation-caveman.md) | 压缩回复约 65–75%，省 token | `.claude/settings.json`（插件）、`.caveman.json` | — |
-| **[OpenSpec](docs/installation-openspec.md)（核心，始终安装）** | 开发主流程：先写提案和规范，确认后实现，验证后归档 | `openspec/`、`.claude/skills/openspec-*`、`.claude/commands/opsx/` | `openspec` ≥ 1.15 |
-| [CodeGraph](docs/installation-codegraph.md) | 预索引的代码知识图谱 | `.mcp.json`、`.claude/settings.json`、`.claude/CLAUDE.md` | `codegraph` |
-| [agent-browser](docs/installation-agent-browser.md) | 通过 CDP 控制浏览器 | `.claude/skills/agent-browser`、`skills-lock.json`、`agent-browser.json` | `agent-browser` |
+| [exa](skills/rsh-kickstart/references/installation-mcp.md) | 联网搜索 | `.mcp.json` | — |
+| [context7](skills/rsh-kickstart/references/installation-mcp.md) | 库和框架的最新文档 | `.mcp.json` | — |
+| [searchcode](skills/rsh-kickstart/references/installation-mcp.md) | 公开仓库代码搜索 | `.mcp.json` | — |
+| [caveman](skills/rsh-kickstart/references/installation-caveman.md) | 压缩回复约 65–75%，省 token | `.claude/settings.json`（插件）、`.caveman.json` | — |
+| **[OpenSpec](skills/rsh-kickstart/references/installation-openspec.md)（核心，始终安装）** | 开发主流程：先写提案和规范，确认后实现，验证后归档 | `openspec/`、`.claude/skills/openspec-*`、`.claude/commands/opsx/` | `openspec` ≥ 1.15 |
+| [CodeGraph](skills/rsh-kickstart/references/installation-codegraph.md) | 预索引的代码知识图谱 | `.mcp.json`、`.claude/settings.json`、`.claude/CLAUDE.md` | `codegraph` |
+| [agent-browser](skills/rsh-kickstart/references/installation-agent-browser.md) | 通过 CDP 控制浏览器 | `.claude/skills/agent-browser`、`skills-lock.json`、`agent-browser.json` | `agent-browser` |
 
 ### 默认配置
 
@@ -154,7 +152,7 @@ npm install -g agent-browser && agent-browser install   # 用了 agent-browser �
 
 ## 如何让它为你所用
 
-1. **添加新模块**：复制一份现有的 `docs/installation-*.md` 改写，再在 [`docs/installation.md`](docs/installation.md) Step 3 的表格和本 README 的模块表里登记。查找可用的 skill：`npx skills find <关键词>`，或浏览 [skills.sh](https://skills.sh)
+1. **添加新模块**：复制一份现有的 `skills/rsh-kickstart/references/installation-*.md` 改写，再在 [`installation.md`](skills/rsh-kickstart/references/installation.md) Step 3 的表格和本 README 的模块表里登记。查找可用的 skill：`npx skills find <关键词>`，或浏览 [skills.sh](https://skills.sh)
 2. **删掉用不到的模块**：删除对应文档，同时删掉两张表里的那一行
 
 它是起点，不是框架。
